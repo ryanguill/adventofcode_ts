@@ -17,10 +17,10 @@ const day = 4;
 /*
 
   execute solution:
-    clear && npm run compile && time node dist/day-4/day-4-1.js
+    clear && npm run compile && time node --trace-warnings --async-stack-traces dist/2018/day-4/day-4-1.js
 
   unit test
-    clear && npm run compile && ./node_modules/.bin/mocha --ui tdd dist/day-4/day-4-1.js
+    clear && npm run compile && ./node_modules/.bin/mocha --ui tdd dist/2018/day-4/day-4-1.js
 
 
   Answer: 
@@ -102,7 +102,7 @@ function processInput(lines: string[]) {
     })
     .sort((a, b) => a.unixtime - b.unixtime);
 
-  fs.writeFileSync(`./src/day-${day}/records-debug.txt`, sortedLines.map(x => JSON.stringify(x)).join('\n'));
+  fs.writeFileSync(`./src/${year}/day-${day}/records-debug.txt`, sortedLines.map(x => JSON.stringify(x)).join('\n'));
   return sortedLines.reduce(
     function(state: state, record: record) {
       state.currentId = state.currentId || 0;

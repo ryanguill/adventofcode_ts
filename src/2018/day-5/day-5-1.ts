@@ -21,10 +21,10 @@ const day = 5;
 /*
 
   execute solution:
-    clear && npm run compile && time node dist/day-5/day-5-1.js
+    clear && npm run compile && time node --trace-warnings --async-stack-traces dist/2018/day-5/day-5-1.js
 
   unit test
-    clear && npm run compile && ./node_modules/.bin/mocha --ui tdd dist/day-5/day-5-1.js
+    clear && npm run compile && ./node_modules/.bin/mocha --ui tdd dist/2018/day-5/day-5-1.js
 
 
   Answer: 
@@ -78,10 +78,10 @@ if (!isRunningUnitTests()) {
     console.log({ answer: data.length });
 
     await pngFilesToGif({
-      pngFilesGlob: `./src/day-${day}/png/matrix-debug-0.png`,
+      pngFilesGlob: `./src/${year}/day-${day}/png/matrix-debug-0.png`,
       width: 250,
       height: 200,
-      outputFilename: `./src/day-${day}/png/matrix-debug.gif`,
+      outputFilename: `./src/${year}/day-${day}/png/matrix-debug.gif`,
     });
 
     endTerminalBlock();
@@ -90,15 +90,20 @@ if (!isRunningUnitTests()) {
 
 function writePng(data: string[], suffix: number) {
   outputMatrixPng(
-    transpose(chunk(data.map(char => char.charCodeAt(0) - 65), 250)),
-    `./src/day-${day}/png/matrix-debug-${suffix}.png`,
+    transpose(
+      chunk(
+        data.map(char => char.charCodeAt(0) - 65),
+        250
+      )
+    ),
+    `./src/${year}/day-${day}/png/matrix-debug-${suffix}.png`,
     250,
     200
   );
 }
 
 function isLowerCase(str: string) {
-  return str == str.toLowerCase() && str != str.toUpperCase();
+  return str === str.toLowerCase() && str !== str.toUpperCase();
 }
 function isOppositeCase(a: string, b: string) {
   return (

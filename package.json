@@ -22,6 +22,7 @@
     "@types/pngjs": "^3.4.2",
     "@types/sinon": "^9.0.9",
     "chai": "^4.2.0",
+    "gifencoder": "^2.0.1",
     "lodash": "^4.17.20",
     "mocha": "^8.2.1",
     "png-file-stream": "^1.2.1",

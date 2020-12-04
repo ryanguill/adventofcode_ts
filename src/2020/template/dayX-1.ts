@@ -7,7 +7,7 @@ import {
   splitLines,
   beginTerminalBlock,
   endTerminalBlock,
-} from '../2020/utils/utils';
+} from '../utils/utils';
 
 const year = 2020;
 const day = 1;

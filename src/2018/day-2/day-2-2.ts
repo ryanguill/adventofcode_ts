@@ -19,10 +19,10 @@ const day = 2;
 /*
 
   execute solution:
-    clear && npm run compile && time node dist/day-2/day-2-2.js
+    clear && npm run compile && time node --trace-warnings --async-stack-traces dist/2018/day-2/day-2-2.js
 
   unit test
-    clear && npm run compile && ./node_modules/.bin/mocha --ui tdd dist/day-2/day-2-2.js
+    clear && npm run compile && ./node_modules/.bin/mocha --ui tdd dist/2018/day-2/day-2-2.js
 
 
   Answer: 

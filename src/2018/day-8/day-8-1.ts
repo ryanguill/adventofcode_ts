@@ -15,10 +15,10 @@ const day = 8;
 /*
 
   execute solution:
-    clear && npm run compile && time node dist/day-8/day-8-1.js
+    clear && npm run compile && time node --trace-warnings --async-stack-traces dist/2018/day-8/day-8-1.js
 
   unit test
-    clear && npm run compile && ./node_modules/.bin/mocha --ui tdd dist/day-8/day-8-1.js
+    clear && npm run compile && ./node_modules/.bin/mocha --ui tdd dist/2018/day-8/day-8-1.js
 
 
   Answer: 
