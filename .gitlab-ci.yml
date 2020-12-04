@@ -1,0 +1,9 @@
+image: node:10-alpine
+
+test_async:
+  script:
+    - npm ci
+    - npm test
+  cache:
+    paths:
+      - node_modules/
