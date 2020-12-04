@@ -21,7 +21,21 @@ const day = 4;
     clear && npm run compile && ./node_modules/.bin/mocha --ui tdd dist/2020/day-4/day-4-1.js
 
 
+  notes
+    The expected fields are as follows:
+
+    byr (Birth Year)
+    iyr (Issue Year)
+    eyr (Expiration Year)
+    hgt (Height)
+    hcl (Hair Color)
+    ecl (Eye Color)
+    pid (Passport ID)
+    cid (Country ID)
+
+
   Answer:
+	204
 
 
 
@@ -36,17 +50,36 @@ if (!isRunningUnitTests()) {
   (async function main() {
     beginTerminalBlock({ year, day });
 
-    let lines = splitLines(await readInput({ year, day, overwrite: false }));
+    let rawInput = (await readInput({ year, day, overwrite: false })).split('\n\n');
 
-	const answer = 42;
+    const input = rawInput.map(line =>
+      line
+        .replace(/\n/g, ' ')
+        .split(' ')
+        .map(field => {
+          const [key, value] = field.split(':');
+          const o: keyValueObject = {};
+          o[key] = value;
+          return o;
+        })
+    );
+    //console.log(input);
 
-	console.log({answer});
+    const requiredKeys = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid'];
+
+    const validPassports = input.filter(function (passport) {
+        return requiredKeys.every(key => passport.find(item => item.hasOwnProperty(key)))
+    })
+
+    console.log({ answer: validPassports.length });
 
     endTerminalBlock();
   })();
 }
 
-
+interface keyValueObject {
+  [key: string]: string;
+}
 
 /*
 ===============================================================================

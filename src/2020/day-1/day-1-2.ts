@@ -7,7 +7,7 @@ import {
   splitLines,
   beginTerminalBlock,
   endTerminalBlock,
-  sum,
+  cartesian,
 } from '../utils/utils';
 
 const year = 2020;
@@ -23,7 +23,8 @@ const day = 1;
 
 
   Answer:
-    160137
+		111605670
+  Rank;
 
   Notes:
 
@@ -42,26 +43,15 @@ if (!isRunningUnitTests()) {
 
     const input = lines.map(Number);
 
-    const answer = input.map(x => iterCalc(0, x)).reduce(sum)
+    const combined: number[][] = cartesian(input, input, input);
+    const added = combined.filter(([a, b, c]) => a + b + c === 2020);
+    const [a, b, c] = added[0];
+    const answer = a * b * c;
 
-    console.log({answer})
+    console.log({ answer });
 
     endTerminalBlock();
   })();
-}
-
-function calc (x:number) {
-	const fuel = Math.floor(x/3)-2;
-	return fuel <= 0 ? 0 : fuel
-}
-
-function iterCalc (sum:number | undefined, x:number) : number {
-	sum = sum || 0;
-	const fuel = calc(x);
-	if (fuel > 0) {
-		return iterCalc(sum+fuel, fuel);
-	}
-	return sum;
 }
 
 /*
@@ -74,8 +64,6 @@ if (isRunningUnitTests()) {
   let assert = chai.assert;
 
   testSuite(function() {
-    test('iterCalc', async function() {
-        expect(iterCalc(0, 0)).to.equal(0);
-    });
+    test('test example function', async function() {});
   }, __filename);
 }

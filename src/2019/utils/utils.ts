@@ -13,7 +13,7 @@ let assert = chai.assert;
 
 export const isRunningUnitTests = () => process.argv.length > 1 && process.argv[1].includes('mocha');
 export const getUnitTestLabel = (filename: string) => `${filename.split('/').reverse()[0]} tests`;
-export const testSuite = (f: () => void, filename: string = __filename, label: string = getUnitTestLabel(filename)) =>
+export const testSuite = (f: (() => void), filename: string = __filename, label: string = getUnitTestLabel(filename)) =>
   isRunningUnitTests() && mocha.suite(label, f);
 
 export function combine<T>(input: T[], min: number, max: number): T[][] {
@@ -44,11 +44,7 @@ testSuite(function() {
   test('combine', async function() {
     assert.deepEqual(combine([1, 2, 3], 1, 1), [[1], [2], [3]]);
     assert.deepEqual(combine([1, 2, 3], 1, 2), [[1], [2], [3], [1, 2], [1, 3], [2, 3]]);
-    assert.deepEqual(combine([1, 2, 3], 2, 2), [
-      [1, 2],
-      [1, 3],
-      [2, 3],
-    ]);
+    assert.deepEqual(combine([1, 2, 3], 2, 2), [[1, 2], [1, 3], [2, 3]]);
     assert.deepEqual(combine([1, 2, 3], 1, 3), [[1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]]);
     assert.deepEqual(combine([1, 2, 3], 3, 3), [[1, 2, 3]]);
     assert.deepEqual(combine([1, 2, 3], 3, 10), [[1, 2, 3]]);
@@ -311,19 +307,9 @@ export function transpose<T>(input: T[][]): T[][] {
 
 testSuite(function() {
   test('transpose', async function() {
-    let input = [
-      [1, 1, 1, 0],
-      [0, 1, 0, 0],
-      [0, 0, 1, 0],
-      [0, 1, 1, 1],
-    ];
+    let input = [[1, 1, 1, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 1, 1, 1]];
 
-    assert.deepEqual(transpose(input), [
-      [1, 0, 0, 0],
-      [1, 1, 0, 1],
-      [1, 0, 1, 1],
-      [0, 0, 0, 1],
-    ]);
+    assert.deepEqual(transpose(input), [[1, 0, 0, 0], [1, 1, 0, 1], [1, 0, 1, 1], [0, 0, 0, 1]]);
   });
 });
 
@@ -345,12 +331,7 @@ testSuite(function() {
 });
 
 export function neighbors4([x, y]: Point): Point[] {
-  return [
-    [x, y + 1],
-    [x + 1, y],
-    [x, y - 1],
-    [x - 1, y],
-  ];
+  return [[x, y + 1], [x + 1, y], [x, y - 1], [x - 1, y]];
 }
 
 export function neighbors8([x, y]: Point): Point[] {
@@ -368,12 +349,7 @@ export function neighbors8([x, y]: Point): Point[] {
 
 testSuite(function() {
   test('countOnBitsInNumber', async function() {
-    assert.deepEqual(neighbors4([1, 1]), [
-      [1, 2],
-      [2, 1],
-      [1, 0],
-      [0, 1],
-    ]);
+    assert.deepEqual(neighbors4([1, 1]), [[1, 2], [2, 1], [1, 0], [0, 1]]);
 
     assert.lengthOf(neighbors4([1, 1]), 4);
   });
@@ -615,10 +591,7 @@ testSuite(function() {
 export function zip(inputs: any[][]): any[] {
   //find the max length array
   const output = [];
-  const longest = Math.max.apply(
-    null,
-    inputs.map(input => input.length)
-  );
+  const longest = Math.max.apply(null, inputs.map(input => input.length));
 
   for (let index = 0; index < longest; index += 1) {
     const element = [];
@@ -633,17 +606,7 @@ export function zip(inputs: any[][]): any[] {
 
 testSuite(function() {
   test('zip', function() {
-    expect(
-      zip([
-        [1, 2, 3],
-        ['a', 'b', 'c', 'd'],
-      ])
-    ).to.deep.equal([
-      [1, 'a'],
-      [2, 'b'],
-      [3, 'c'],
-      [undefined, 'd'],
-    ]);
+    expect(zip([[1, 2, 3], ['a', 'b', 'c', 'd']])).to.deep.equal([[1, 'a'], [2, 'b'], [3, 'c'], [undefined, 'd']]);
   });
 });
 
@@ -865,13 +828,6 @@ export function matrixToText(matrix: matrix, fn: (point: point, value: any) => a
     output += matrix[x].map((value, y) => fn({ x, y }, value)).join('') + '\n';
   }
   return output;
-}
-
-//todo figure out how to type this
-export function cartesian(...a: any) : any {
-  return a.reduce(function<T>(a: T[], b: T[]) {
-    return a.flatMap(d => b.map(e => [d, e].flat()));
-  });
 }
 
 // clear && npm run compile && ./node_modules/.bin/mocha --ui tdd dist/utils/utils.js

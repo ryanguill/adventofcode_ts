@@ -7,23 +7,24 @@ import {
   splitLines,
   beginTerminalBlock,
   endTerminalBlock,
-  cartesian,
+  sum,
 } from '../utils/utils';
 
-const year = 2020;
+const year = 2019;
 const day = 1;
 
 /*
 
   execute solution:
-    clear && npm run compile && time node --trace-warnings --async-stack-traces dist/2020/day-1/day-1-1.js
+    clear && npm run compile && time node --trace-warnings --async-stack-traces dist/2019/day-1/day-1-1.js
 
   unit test
-    clear && npm run compile && ./node_modules/.bin/mocha --ui tdd dist/2020/day-1/day-1-1.js
+    clear && npm run compile && ./node_modules/.bin/mocha --ui tdd dist/2019/day-1/day-1-1.js
 
 
   Answer:
-		381699
+    3178783
+
   Rank;
 
   Notes:
@@ -43,18 +44,13 @@ if (!isRunningUnitTests()) {
 
     const input = lines.map(Number);
 
-    const combined: number[][] = cartesian(input, input);
-    const added = combined.filter(([a, b]) => a + b === 2020);
-    const [a, b] = added[0];
-    const answer = a * b;
+    const answer = input.map(x => Math.floor(x / 3) - 2).reduce(sum);
 
-
-    console.log({answer});
+    console.log({ answer });
 
     endTerminalBlock();
   })();
 }
-
 
 /*
 ===============================================================================
