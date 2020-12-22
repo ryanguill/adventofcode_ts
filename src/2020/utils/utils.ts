@@ -9,7 +9,17 @@ const request = require('request');
 let expect = chai.expect;
 let assert = chai.assert;
 
-// npm run compile && ./node_modules/.bin/mocha --ui tdd dist/utils/utils.js
+export interface keyValueObject {
+  [key: string]: string;
+}
+
+export function randRange(min: number, max: number) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// npm run compile && ./node_modules/.bin/mocha --ui tdd dist/2020/utils/utils.js
 
 export const isRunningUnitTests = () => process.argv.length > 1 && process.argv[1].includes('mocha');
 export const getUnitTestLabel = (filename: string) => `${filename.split('/').reverse()[0]} tests`;
@@ -868,10 +878,29 @@ export function matrixToText(matrix: matrix, fn: (point: point, value: any) => a
 }
 
 //todo figure out how to type this
-export function cartesian(...a: any) : any {
+export function cartesian(...a: any): any {
   return a.reduce(function<T>(a: T[], b: T[]) {
     return a.flatMap(d => b.map(e => [d, e].flat()));
   });
 }
 
 // clear && npm run compile && ./node_modules/.bin/mocha --ui tdd dist/utils/utils.js
+
+export function chunk<T>(array: T[], size: number) {
+  const chunked_arr = [];
+  let index = 0;
+  while (index < array.length) {
+    chunked_arr.push(array.slice(index, size + index));
+    index += size;
+  }
+  return chunked_arr;
+}
+
+export function intersect<T>(...sets: Set<T>[]) {
+  if (!sets.length) return new Set();
+  const i = sets.reduce((m, s, i) => (s.size < sets[m].size ? i : m), 0);
+  const [smallest] = sets.splice(i, 1);
+  const res = new Set();
+  for (let val of smallest) if (sets.every(s => s.has(val))) res.add(val);
+  return res;
+}
