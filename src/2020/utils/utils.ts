@@ -21,10 +21,15 @@ export function randRange(min: number, max: number) {
 
 // npm run compile && ./node_modules/.bin/mocha --ui tdd dist/2020/utils/utils.js
 
-export const isRunningUnitTests = () => process.argv.length > 1 && process.argv[1].includes('mocha');
-export const getUnitTestLabel = (filename: string) => `${filename.split('/').reverse()[0]} tests`;
-export const testSuite = (f: () => void, filename: string = __filename, label: string = getUnitTestLabel(filename)) =>
-  isRunningUnitTests() && mocha.suite(label, f);
+export const isRunningUnitTests = () =>
+  process.argv.length > 1 && process.argv[1].includes('mocha');
+export const getUnitTestLabel = (filename: string) =>
+  `${filename.split('/').reverse()[0]} tests`;
+export const testSuite = (
+  f: () => void,
+  filename: string = __filename,
+  label: string = getUnitTestLabel(filename)
+) => isRunningUnitTests() && mocha.suite(label, f);
 
 export function combine<T>(input: T[], min: number, max: number): T[][] {
   var out: T[][] = [];
@@ -53,16 +58,39 @@ export function combine<T>(input: T[], min: number, max: number): T[][] {
 testSuite(function() {
   test('combine', async function() {
     assert.deepEqual(combine([1, 2, 3], 1, 1), [[1], [2], [3]]);
-    assert.deepEqual(combine([1, 2, 3], 1, 2), [[1], [2], [3], [1, 2], [1, 3], [2, 3]]);
+    assert.deepEqual(combine([1, 2, 3], 1, 2), [
+      [1],
+      [2],
+      [3],
+      [1, 2],
+      [1, 3],
+      [2, 3],
+    ]);
     assert.deepEqual(combine([1, 2, 3], 2, 2), [
       [1, 2],
       [1, 3],
       [2, 3],
     ]);
-    assert.deepEqual(combine([1, 2, 3], 1, 3), [[1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]]);
+    assert.deepEqual(combine([1, 2, 3], 1, 3), [
+      [1],
+      [2],
+      [3],
+      [1, 2],
+      [1, 3],
+      [2, 3],
+      [1, 2, 3],
+    ]);
     assert.deepEqual(combine([1, 2, 3], 3, 3), [[1, 2, 3]]);
     assert.deepEqual(combine([1, 2, 3], 3, 10), [[1, 2, 3]]);
-    assert.deepEqual(combine([1, 2, 3], -10, 10), [[1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]]);
+    assert.deepEqual(combine([1, 2, 3], -10, 10), [
+      [1],
+      [2],
+      [3],
+      [1, 2],
+      [1, 3],
+      [2, 3],
+      [1, 2, 3],
+    ]);
   });
 });
 
@@ -109,7 +137,10 @@ testSuite(function() {
 //currying signatures
 export function pluck(key: string): (x: Object) => any;
 export function pluck(key: string, input: { [key: string]: any }): any;
-export function pluck(key: string, input?: { [key: string]: any }): any | undefined {
+export function pluck(
+  key: string,
+  input?: { [key: string]: any }
+): any | undefined {
   if (!input) {
     return function(input: { [key: string]: any }): any | undefined {
       return pluck(key, input);
@@ -186,7 +217,9 @@ export function sha256(input: string): string {
 
 testSuite(function() {
   test('sha256', async function() {
-    expect(sha256('foo')).to.equal('2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae');
+    expect(sha256('foo')).to.equal(
+      '2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae'
+    );
   });
 });
 
@@ -265,7 +298,10 @@ testSuite(function() {
 type TimesF = (i: number) => any;
 export function times(count: number): (x: TimesF) => any[];
 export function times(count: number, f: TimesF): any[];
-export function times(count: number, f?: TimesF): ((x: TimesF) => any[]) | any[] {
+export function times(
+  count: number,
+  f?: TimesF
+): ((x: TimesF) => any[]) | any[] {
   if (!f) {
     return function(f: TimesF): any[] {
       return times(count, f);
@@ -339,7 +375,8 @@ testSuite(function() {
 
 export function countOnBitsInNumber(input: number): number {
   let x = Math.floor(input); //make sure we have an int
-  let count: number = x - ((x >> 1) & 0o33333333333) - ((x >> 2) & 0o11111111111);
+  let count: number =
+    x - ((x >> 1) & 0o33333333333) - ((x >> 2) & 0o11111111111);
   return ((count + (count >> 3)) & 0o30707070707) % 63;
 }
 
@@ -398,7 +435,8 @@ export function readInput({
   day: number;
   overwrite?: boolean;
 }): Promise<string> {
-  const sessionId = '53616c7465645f5f1a7f2f45f0bd458383c7ee9ab45fc3fc42d20b4125ce7acb6802097735d467c9a0d43b951e48d494';
+  const sessionId =
+    '53616c7465645f5f1a7f2f45f0bd458383c7ee9ab45fc3fc42d20b4125ce7acb6802097735d467c9a0d43b951e48d494';
   const filename = `./src/${year}/day-${day}/input.txt`;
 
   //if the file already exists and has a value use that instead
@@ -422,7 +460,9 @@ export function readInput({
           return reject(err);
         }
         if (res.statusCode === 200) {
-          console.log(`Year ${year} Day ${day} input written to ${filename}... ${body.length}`);
+          console.log(
+            `Year ${year} Day ${day} input written to ${filename}... ${body.length}`
+          );
           fs.writeFileSync(filename, body.trim());
           return resolve(body.trim());
         } else {
@@ -450,20 +490,42 @@ testSuite(function() {
   });
 });
 
-export function beginTerminalBlock({ year, day }: { year: number; day: number }) {
-  console.log('--------------------------------------------------------------------------------');
-  console.log(`---------------------------------- ${year} ----------------------------------------`);
-  console.log(`---------------------------------- Day ${day} ---------------------------------------`);
-  console.log('--------------------------------------------------------------------------------');
+export function beginTerminalBlock({
+  year,
+  day,
+}: {
+  year: number;
+  day: number;
+}) {
+  console.log(
+    '--------------------------------------------------------------------------------'
+  );
+  console.log(
+    `---------------------------------- ${year} ----------------------------------------`
+  );
+  console.log(
+    `---------------------------------- Day ${day} ---------------------------------------`
+  );
+  console.log(
+    '--------------------------------------------------------------------------------'
+  );
   console.log(`\n\n`);
 }
 
 export function endTerminalBlock() {
   console.log(`\n\n`);
-  console.log('--------------------------------------------------------------------------------');
-  console.log('--------------------------------------------------------------------------------');
-  console.log('--------------------------------------------------------------------------------');
-  console.log('--------------------------------------------------------------------------------');
+  console.log(
+    '--------------------------------------------------------------------------------'
+  );
+  console.log(
+    '--------------------------------------------------------------------------------'
+  );
+  console.log(
+    '--------------------------------------------------------------------------------'
+  );
+  console.log(
+    '--------------------------------------------------------------------------------'
+  );
 }
 
 export function memoize(f: Function): any {
@@ -542,7 +604,10 @@ testSuite(function() {
   });
 });
 
-export function splitLines(input: string, options?: { filterEmptyLines: boolean }): string[] {
+export function splitLines(
+  input: string,
+  options?: { filterEmptyLines: boolean }
+): string[] {
   options = options || { filterEmptyLines: true };
   let lines = input.split('\n');
   if (options.filterEmptyLines) {
@@ -567,7 +632,18 @@ export function* cycle(iterable: any) {
 
 testSuite(function() {
   test('cycle', function*() {
-    expect(take(10, yield cycle([1, 2, 3]))).to.eql([1, 2, 3, 1, 2, 3, 1, 2, 3, 1]);
+    expect(take(10, yield cycle([1, 2, 3]))).to.eql([
+      1,
+      2,
+      3,
+      1,
+      2,
+      3,
+      1,
+      2,
+      3,
+      1,
+    ]);
   });
 });
 
@@ -657,7 +733,7 @@ testSuite(function() {
   });
 });
 
-export type matrix = number[][];
+export type matrix = any[][];
 
 export interface point {
   x: number;
@@ -843,13 +919,20 @@ export function greatest(a: number, b: number) {
 
 // @todo test greatest, especially what happens when a is undefined
 
-export function createEmptyMatrix(width: number, height: number, defaultValue: any): matrix {
+export function createEmptyMatrix(
+  width: number,
+  height: number,
+  defaultValue: any
+): matrix {
   return Array(width)
     .fill(defaultValue)
     .map(() => Array(height).fill(defaultValue));
 }
 
-export function mapMatrix(matrix: matrix, fn: (point: point, value: any) => any): matrix {
+export function mapMatrix(
+  matrix: matrix,
+  fn: (point: point, value: any) => any
+): matrix {
   const output = deepClone(matrix);
   for (let x = 0; x < matrix.length; x++) {
     for (let y = 0; y < matrix[x].length; y++) {
@@ -859,7 +942,11 @@ export function mapMatrix(matrix: matrix, fn: (point: point, value: any) => any)
   return output;
 }
 
-export function reduceMatrix<T>(matrix: matrix, fn: (accumulator: T, point: point, value: any) => any, initial: T): T {
+export function reduceMatrix<T>(
+  matrix: matrix,
+  fn: (accumulator: T, point: point, value: any) => any,
+  initial: T
+): T {
   let output = initial;
   for (let x = 0; x < matrix.length; x++) {
     for (let y = 0; y < matrix[x].length; y++) {
@@ -869,7 +956,10 @@ export function reduceMatrix<T>(matrix: matrix, fn: (accumulator: T, point: poin
   return output;
 }
 
-export function matrixToText(matrix: matrix, fn: (point: point, value: any) => any): string {
+export function matrixToText(
+  matrix: matrix,
+  fn: (point: point, value: any) => any
+): string {
   let output = '';
   for (let x = 0; x < matrix.length; x++) {
     output += matrix[x].map((value, y) => fn({ x, y }, value)).join('') + '\n';
@@ -886,21 +976,85 @@ export function cartesian(...a: any): any {
 
 // clear && npm run compile && ./node_modules/.bin/mocha --ui tdd dist/utils/utils.js
 
-export function chunk<T>(array: T[], size: number) {
-  const chunked_arr = [];
-  let index = 0;
-  while (index < array.length) {
-    chunked_arr.push(array.slice(index, size + index));
-    index += size;
-  }
-  return chunked_arr;
-}
-
 export function intersect<T>(...sets: Set<T>[]) {
-  if (!sets.length) return new Set();
+  if (!sets.length) {
+    return new Set();
+  }
   const i = sets.reduce((m, s, i) => (s.size < sets[m].size ? i : m), 0);
   const [smallest] = sets.splice(i, 1);
   const res = new Set();
-  for (let val of smallest) if (sets.every(s => s.has(val))) res.add(val);
+  for (let val of smallest) {
+    if (sets.every(s => s.has(val))) {
+      res.add(val);
+    }
+  }
   return res;
 }
+
+export function chunk<T>(input: T[], size: number): T[][] {
+  return partition(input, size);
+}
+
+export function partition<T>(input: T[], n: number, step: number = n): T[][] {
+  const output = [];
+  for (let idx = 0; idx < input.length; idx += step) {
+    output.push(input.slice(idx, idx + n));
+  }
+  return output;
+}
+
+export function freq<T>(input: T[]): Map<T, number> {
+  const output = new Map<T, number>();
+  for (let x of input) {
+    output.set(x, (output.get(x) || 0) + 1);
+  }
+  return output;
+}
+
+testSuite(function() {
+  test('chunk', async function() {
+    let x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+    expect(chunk(x, 2)).to.deep.equal([
+      [0, 1],
+      [2, 3],
+      [4, 5],
+      [6, 7],
+      [8, 9],
+    ]);
+    expect(chunk(x, 3)).to.deep.equal([[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]);
+  });
+
+  test('partition', async function() {
+    let x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+    expect(partition(x, 2)).to.deep.equal([
+      [0, 1],
+      [2, 3],
+      [4, 5],
+      [6, 7],
+      [8, 9],
+    ]);
+    expect(partition(x, 2, 1)).to.deep.equal([
+      [0, 1],
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [4, 5],
+      [5, 6],
+      [6, 7],
+      [7, 8],
+      [8, 9],
+      [9],
+    ]);
+  });
+
+  test('freq', async function() {
+    let x = [1, 2, 2, 3, 3, 3];
+    expect([...freq(x).entries()]).to.deep.equal([
+      [1, 1],
+      [2, 2],
+      [3, 3],
+    ]);
+  });
+}, __filename);
